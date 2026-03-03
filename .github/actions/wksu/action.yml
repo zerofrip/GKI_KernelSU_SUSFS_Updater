@@ -39,14 +39,16 @@ runs:
         echo "Wild_KSU found at: $GITHUB_WORKSPACE/Wild_KSU"
         echo "=== Debug: Wild_KSU contents ==="
         ls -la "$GITHUB_WORKSPACE/Wild_KSU/"
+        echo "=== Debug: Wild_KSU/kernel/ contents ==="
+        ls -la "$GITHUB_WORKSPACE/Wild_KSU/kernel/" 2>/dev/null || echo "  (kernel/ subdirectory not found)"
 
     - name: Setup Wild KSU
       shell: bash
       working-directory: ${{ github.workspace }}/kernel
       run: |
-        # Move Wild_KSU into the kernel tree
-        # Note: $GITHUB_WORKSPACE is the repo checkout root, and working-directory
-        # is set to kernel/, so we move from parent into current directory.
+        # Copy Wild_KSU into the kernel tree.
+        # Note: Using cp -r instead of mv because artifact downloads may be on
+        # different filesystems, and cp is always safe.
         if [ -d "$GITHUB_WORKSPACE/Wild_KSU" ]; then
           cp -r "$GITHUB_WORKSPACE/Wild_KSU" ./Wild_KSU
         else
@@ -54,18 +56,22 @@ runs:
           exit 1
         fi
 
-        # Ensure setup.sh is executable — artifact upload/download does NOT
-        # preserve file permissions, so we must explicitly set them.
-        if [ ! -f "./Wild_KSU/setup.sh" ]; then
-          echo "ERROR: Wild_KSU/setup.sh not found!"
+        # The Wild_KSU repo structure is:
+        #   Wild_KSU/kernel/setup.sh  — for kernel builds (this workflow)
+        #   Wild_KSU/manager/setup.sh — for manager builds (not used here)
+        # There is NO setup.sh at the Wild_KSU root.
+        if [ ! -f "./Wild_KSU/kernel/setup.sh" ]; then
+          echo "ERROR: Wild_KSU/kernel/setup.sh not found!"
           echo "Contents of Wild_KSU:"
           ls -laR ./Wild_KSU/
           exit 1
         fi
 
-        chmod +x ./Wild_KSU/setup.sh
-        echo "Running Wild_KSU/setup.sh..."
-        ./Wild_KSU/setup.sh
+        # Restore execute permission — artifact upload/download strips file
+        # permissions, so we must explicitly chmod +x before running.
+        chmod +x ./Wild_KSU/kernel/setup.sh
+        echo "Running Wild_KSU/kernel/setup.sh..."
+        ./Wild_KSU/kernel/setup.sh
 
     - name: Enable KernelSU Config
       shell: bash
