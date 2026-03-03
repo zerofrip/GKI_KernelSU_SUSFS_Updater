@@ -87,14 +87,37 @@ Flashing this kernel will void your warranty, and there is always a risk of bric
 
 ---
 
-<div align="center">
+## 📱 Franco Kernel Manager (FKM) Support
 
-## 📱 Connect With Us
+This repository automatically generates **Franco Kernel Manager** compatible JSON files for each LTS kernel build.
 
-[![Telegram](https://img.shields.io/badge/Telegram-TheWildJames-blue?logo=telegram)](https://t.me/TheWildJames)
-[![Telegram Group](https://img.shields.io/badge/Telegram-Wild__Kernels-blue?logo=telegram)](https://t.me/WildKernels)
+**JSON files are available on the [`fkm-json` branch](../../tree/fkm-json).**
 
-</div>
+Each kernel has a dedicated JSON file:
+```
+https://raw.githubusercontent.com/zerofrip/GKI_KernelSU_SUSFS_Updater/fkm-json/kernel-downloads-{version}.json
+```
+
+Example: `kernel-downloads-6.6.118-android15-lts.json`
+
+---
+
+## 🔄 Monthly LTS Builds
+
+Automated monthly builds run on the **1st of each month** (UTC). The workflow:
+1. Checks Google's Android kernel repos for upstream LTS changes
+2. Builds all 7 LTS kernel versions if changes are detected
+3. Creates a GitHub Release with permanent download URLs
+4. Generates FKM-compatible JSON files
+
+LTS versions tracked:
+| Version | Android |
+|---------|----------|
+| 5.10.X | Android 12, 13 |
+| 5.15.X | Android 13, 14 |
+| 6.1.X | Android 14 |
+| 6.6.X | Android 15 |
+| 6.12.X | Android 16 |
 
 ---
 
