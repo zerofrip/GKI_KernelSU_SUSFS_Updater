@@ -4,11 +4,67 @@ description: Download and configure Wild KSU with version tracking
 runs:
   using: composite
   steps:
-    - name: Download Wild KSU
+    # =========================================================================
+    # Step 1: Verify and move Wild_KSU into the kernel tree
+    #
+    # Wild_KSU is downloaded as part of the build-dependencies artifact in
+    # dependencies.yml (cloned from WildKernels/Wild_KSU). The artifact is
+    # extracted to $GITHUB_WORKSPACE. We need to move it into kernel/ so
+    # setup.sh can find the kernel source tree.
+    #
+    # Common failure causes:
+    #   - Artifact didn't preserve execute permissions → chmod +x
+    #   - Wild_KSU directory missing from artifact → fail with clear message
+    # =========================================================================
+    - name: Debug - Verify Wild_KSU Exists
+      shell: bash
+      run: |
+        echo "=== Debug: Current working directory ==="
+        pwd
+
+        echo "=== Debug: Listing \$GITHUB_WORKSPACE ==="
+        ls -la "$GITHUB_WORKSPACE/"
+
+        echo "=== Debug: Checking Wild_KSU directory ==="
+        if [ ! -d "$GITHUB_WORKSPACE/Wild_KSU" ]; then
+          echo "ERROR: Wild_KSU directory not found at \$GITHUB_WORKSPACE/Wild_KSU"
+          echo "The build-dependencies artifact may not have been downloaded correctly."
+          echo ""
+          echo "Expected location: $GITHUB_WORKSPACE/Wild_KSU"
+          echo "Available directories:"
+          find "$GITHUB_WORKSPACE" -maxdepth 1 -type d | sort
+          exit 1
+        fi
+
+        echo "Wild_KSU found at: $GITHUB_WORKSPACE/Wild_KSU"
+        echo "=== Debug: Wild_KSU contents ==="
+        ls -la "$GITHUB_WORKSPACE/Wild_KSU/"
+
+    - name: Setup Wild KSU
       shell: bash
       working-directory: ${{ github.workspace }}/kernel
       run: |
-        mv "$GITHUB_WORKSPACE/Wild_KSU" ./
+        # Move Wild_KSU into the kernel tree
+        # Note: $GITHUB_WORKSPACE is the repo checkout root, and working-directory
+        # is set to kernel/, so we move from parent into current directory.
+        if [ -d "$GITHUB_WORKSPACE/Wild_KSU" ]; then
+          cp -r "$GITHUB_WORKSPACE/Wild_KSU" ./Wild_KSU
+        else
+          echo "ERROR: Wild_KSU not found at $GITHUB_WORKSPACE/Wild_KSU"
+          exit 1
+        fi
+
+        # Ensure setup.sh is executable — artifact upload/download does NOT
+        # preserve file permissions, so we must explicitly set them.
+        if [ ! -f "./Wild_KSU/setup.sh" ]; then
+          echo "ERROR: Wild_KSU/setup.sh not found!"
+          echo "Contents of Wild_KSU:"
+          ls -laR ./Wild_KSU/
+          exit 1
+        fi
+
+        chmod +x ./Wild_KSU/setup.sh
+        echo "Running Wild_KSU/setup.sh..."
         ./Wild_KSU/setup.sh
 
     - name: Enable KernelSU Config
