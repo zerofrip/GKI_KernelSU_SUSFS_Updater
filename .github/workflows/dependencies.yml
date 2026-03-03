@@ -19,8 +19,10 @@ jobs:
     - name: Download Wild KSU
       shell: bash
       run: |
-        # Download and run KSU setup
-        git clone "https://github.com/WildKernels/Wild_KSU.git" -b "canary" --depth=1
+        # Clone Wild_KSU with FULL history and tags.
+        # setup.sh relies on git describe, git rev-list, and origin/HEAD which
+        # all require full commit history — shallow clones (--depth=1) break these.
+        git clone "https://github.com/WildKernels/Wild_KSU.git" -b "canary"
 
         git clone https://github.com/WildKernels/AnyKernel3.git -b gki-2.0 --depth=1
         echo "AnyKernel3 commit: $(cd AnyKernel3 && git rev-parse --short HEAD)"

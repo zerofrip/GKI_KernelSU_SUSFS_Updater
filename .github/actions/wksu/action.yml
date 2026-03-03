@@ -70,6 +70,19 @@ runs:
         # Restore execute permission — artifact upload/download strips file
         # permissions, so we must explicitly chmod +x before running.
         chmod +x ./Wild_KSU/kernel/setup.sh
+
+        # Ensure full git history and tags are available.
+        # setup.sh relies on: git describe, git rev-list, origin/HEAD
+        # These ALL fail in shallow clones. Even though dependencies.yml now
+        # does a full clone, artifact transfer can lose git metadata, so we
+        # explicitly fetch to be safe.
+        cd ./Wild_KSU
+        git fetch --prune --unshallow 2>/dev/null || true
+        git fetch --tags --force 2>/dev/null || true
+        # Set origin/HEAD if it doesn't exist (common in CI environments)
+        git remote set-head origin -a 2>/dev/null || true
+        cd ..
+
         echo "Running Wild_KSU/kernel/setup.sh..."
         ./Wild_KSU/kernel/setup.sh
 
