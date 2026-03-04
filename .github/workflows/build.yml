@@ -140,10 +140,14 @@ jobs:
             sed -i '/#include <trace\/hooks\/blk.h>/a #include <trace\/hooks\/fs.h>' ./fs/namespace.c
         fi
 
+    - name: Debug .github dir
+      run: ls -la .github/actions/susfs/ || echo "MISSING"
     - name: Setup Wild KSU
       if: contains(inputs.feature_set, 'WKSU')
       uses: ./.github/actions/wksu
 
+    - name: Debug .github dir 2
+      run: ls -la .github/actions/susfs/ || echo "MISSING"
     - name: Setup SUSFS
       if: contains(inputs.feature_set, 'SUSFS')
       uses: ./.github/actions/susfs
