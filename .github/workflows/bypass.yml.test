@@ -1,0 +1,8 @@
+name: Test Workflow Call
+on: push
+jobs:
+  test_workflow_call:
+    uses: ./.github/workflows/build.yml
+    with:
+      kernel_version: "5.10.X-android12-lts"
+      feature_set: 'SUSFS'
