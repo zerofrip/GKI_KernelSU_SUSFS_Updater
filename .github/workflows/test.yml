@@ -1,0 +1,35 @@
+name: Test Local Action Detection
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  test-local-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Print working directory
+        run: pwd
+
+      - name: List full repository tree
+        run: ls -R
+
+      - name: List .github/actions/susfs contents
+        run: ls -la .github/actions/susfs/
+
+      - name: Verify action.yml exists
+        run: |
+          if [ ! -f .github/actions/susfs/action.yml ]; then
+            echo "::error::action.yml NOT FOUND at .github/actions/susfs/action.yml"
+            exit 1
+          fi
+          echo "action.yml found successfully"
+
+      - name: Execute local SUSFS action
+        uses: ./.github/actions/susfs
