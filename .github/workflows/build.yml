@@ -29,10 +29,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Diagnostic - List Action Files
-      run: |
-        echo "Checking for action files right after checkout:"
-        ls -R .github/actions/
 
     - name: Parse kernel version
       id: parse

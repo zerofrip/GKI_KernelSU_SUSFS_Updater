@@ -57,7 +57,7 @@ runs:
         #|| true
     
     - name: Apply Android 12 5.10 Fixes
-      if: inputs.android_version == 'android12' && inputs.kernel_version == '5.10'
+      if: ${{ inputs.android_version == 'android12' && inputs.kernel_version == '5.10' }}
       shell: bash
       working-directory: ${{ github.workspace }}/kernel/common
       run: |
@@ -78,7 +78,7 @@ runs:
         fi
     
     - name: Apply Android 13 5.10 Fixes
-      if: inputs.android_version == 'android13' && inputs.kernel_version == '5.10'
+      if: ${{ inputs.android_version == 'android13' && inputs.kernel_version == '5.10' }}
       shell: bash
       working-directory: ${{ github.workspace }}/kernel/common
       run: |
@@ -95,7 +95,7 @@ runs:
         fi
     
     - name: Apply Android 13 5.15 Fixes
-      if: inputs.android_version == 'android13' && inputs.kernel_version == '5.15'
+      if: ${{ inputs.android_version == 'android13' && inputs.kernel_version == '5.15' }}
       shell: bash
       working-directory: ${{ github.workspace }}/kernel/common
       run: |
@@ -120,7 +120,7 @@ runs:
         fi
     
     - name: Apply Android 14 5.15 Fixes
-      if: inputs.android_version == 'android14' && inputs.kernel_version == '5.15'
+      if: ${{ inputs.android_version == 'android14' && inputs.kernel_version == '5.15' }}
       shell: bash
       working-directory: ${{ github.workspace }}/kernel/common
       run: |
@@ -132,7 +132,7 @@ runs:
         fi
     
     - name: Apply Android 14 6.1 Fixes
-      if: inputs.android_version == 'android14' && inputs.kernel_version == '6.1'
+      if: ${{ inputs.android_version == 'android14' && inputs.kernel_version == '6.1' }}
       shell: bash
       working-directory: ${{ github.workspace }}/kernel/common
       run: |
@@ -144,7 +144,7 @@ runs:
         fi
     
     - name: Apply Android 15 6.6 Fixes
-      if: inputs.android_version == 'android15' && inputs.kernel_version == '6.6'
+      if: ${{ inputs.android_version == 'android15' && inputs.kernel_version == '6.6' }}
       shell: bash
       working-directory: ${{ github.workspace }}/kernel/common
       run: |
