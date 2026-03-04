@@ -141,9 +141,23 @@ jobs:
             sed -i '/#include <trace\/hooks\/blk.h>/a #include <trace\/hooks\/fs.h>' ./fs/namespace.c
         fi
 
+    - name: Diagnostic - Pre-WKSU
+      run: |
+        echo "=== Diagnostic Pre-WKSU ==="
+        ls -la .github/actions/susfs/ || echo "susfs dir missing"
+        cat .github/actions/susfs/action.yml || echo "action.yml missing"
+        file .github/actions/susfs/action.yml || echo "file command failed"
+
     - name: Setup Wild KSU
       if: contains(inputs.feature_set, 'WKSU')
       uses: ./.github/actions/wksu
+
+    - name: Diagnostic - Pre-SUSFS
+      run: |
+        echo "=== Diagnostic Pre-SUSFS ==="
+        ls -la .github/actions/susfs/ || echo "susfs dir missing"
+        cat .github/actions/susfs/action.yml || echo "action.yml missing"
+        file .github/actions/susfs/action.yml || echo "file command failed"
 
     - name: Setup SUSFS
       if: contains(inputs.feature_set, 'SUSFS')
